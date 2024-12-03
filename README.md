@@ -12,7 +12,7 @@ Features available on this version:
 ### `token`
 **Required** Render API token
 
-## `trigger_deploy`
+### `trigger_deploy`
 **Optional** Should trigger the deploy to apply the changes after the definition file is processed - (yes/no) default is yes
 
 ## Example usage
