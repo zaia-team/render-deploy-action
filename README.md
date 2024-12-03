@@ -1,15 +1,23 @@
-# render-deploy-action
+# Render Deploy Github Action
 
-To install dependencies:
+Instrument deploy to Render.com provider.
+Features available on this version:
+- Change env vars
+- Trigger render deploy
 
-```bash
-bun install
-```
+## Inputs
+### `definition_file`
+**Required** Path to the definition file
 
-To run:
+### `token`
+**Required** Render API token
 
-```bash
-bun run index.ts
-```
+## `trigger_deploy`
+**Optional** Should trigger the deploy to apply the changes after the definition file is processed - (yes/no) default is yes
 
-This project was created using `bun init` in bun v1.1.8. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## Example usage
+
+```yaml
+uses: your-username/your-action-repo@v1
+with:
+  config-path: './render/production.json'

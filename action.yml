@@ -1,0 +1,16 @@
+name: 'Render Deploy action'
+description: 'Instrument deploy to Render.com provider'
+inputs:
+  definition_file:
+    description: 'Path to the definition file'
+    required: true
+  token:
+    description: 'Render API token'
+    required: true
+  trigger_deploy:
+    description: 'Should trigger the deploy to apply the changes after the definition file is processed - (yes/no) default is yes'
+    required: false
+    default: "yes"
+runs:
+  using: 'docker'
+  image: './Dockerfile'
