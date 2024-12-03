@@ -1,10 +1,10 @@
 
 FROM oven/bun:1.1.29-alpine
 
-COPY . /src
+COPY . /app
 
-WORKDIR /src
+WORKDIR /app
 
 RUN bun install
 
-CMD ["bun", "run", "main.ts"]
+CMD ["bun", "run", "./src/main.ts"]
