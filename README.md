@@ -18,6 +18,7 @@ Features available on this version:
 ## Example usage
 
 ```yaml
-uses: your-username/your-action-repo@v1
+uses: zaia-team/render-deploy-action@v0.1
 with:
-  config-path: './render/production.json'
+  definition_file: './render/production.json'
+  token: 'your-render-token'
