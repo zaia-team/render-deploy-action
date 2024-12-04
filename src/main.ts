@@ -6,17 +6,9 @@ import { RenderSource } from "./render.source";
 
 try {
   // Get inputs defined in action.yml
-  const definitionFile = core.getInput('definition_file');
-  const renderToken = core.getInput('token');
+  const definitionFile = core.getInput('definition_file', { required: true });
+  const renderToken = core.getInput('token', { required: true });
   const triggerDeploy = core.getInput('trigger_deploy');
-
-  if (!definitionFile) {
-    throw new Error('definition_file input is required');
-  }
-
-  if (!renderToken) {
-    throw new Error('token input is required');
-  }
 
   const rawConfig = JSON.parse(fs.readFileSync(definitionFile, 'utf8'));
 

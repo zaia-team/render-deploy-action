@@ -12,5 +12,5 @@ inputs:
     required: false
     default: "yes"
 runs:
-  using: 'docker'
-  image: './Dockerfile'
+  using: 'node20'
+  main: 'dist/index.js'

@@ -1,9 +1,9 @@
 {
   "name": "render-deploy-action",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
+  "main": "src/main.ts",
+  "scripts": {
+    "build": "tsc",
+    "package": "ncc build --source-map"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -11,6 +11,8 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
+    "@types/node": "^22.10.1",
+    "@vercel/ncc": "^0.38.3",
     "axios": "^1.7.8",
     "commander": "^12.1.0",
     "zod": "^3.23.8"
