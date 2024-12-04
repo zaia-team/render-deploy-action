@@ -3,7 +3,7 @@
   "main": "src/main.ts",
   "scripts": {
     "build": "tsc",
-    "package": "ncc build --source-map"
+    "package": "ncc build -s"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

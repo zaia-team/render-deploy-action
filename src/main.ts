@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { z } from "zod";
-import core from '@actions/core';
+import * as core from '@actions/core';
 
 import { RenderSource } from "./render.source";
 

@@ -27994,9 +27994,9 @@ __nccwpck_require__.r(__webpack_exports__);
 
 try {
     // Get inputs defined in action.yml
-    const definitionFile = _actions_core__WEBPACK_IMPORTED_MODULE_1___default().getInput('definition_file', { required: true });
-    const renderToken = _actions_core__WEBPACK_IMPORTED_MODULE_1___default().getInput('token', { required: true });
-    const triggerDeploy = _actions_core__WEBPACK_IMPORTED_MODULE_1___default().getInput('trigger_deploy');
+    const definitionFile = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('definition_file', { required: true });
+    const renderToken = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('token', { required: true });
+    const triggerDeploy = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('trigger_deploy');
     const rawConfig = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_0___default().readFileSync(definitionFile, 'utf8'));
     if (!rawConfig) {
         throw new Error('definition_file must be a valid JSON file');
@@ -28023,7 +28023,7 @@ try {
     }
 }
 catch (error) {
-    _actions_core__WEBPACK_IMPORTED_MODULE_1___default().setFailed(error.message);
+    _actions_core__WEBPACK_IMPORTED_MODULE_1__.setFailed(error.message);
 }
 
 __webpack_async_result__();
