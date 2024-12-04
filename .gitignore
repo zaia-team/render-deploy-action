@@ -174,3 +174,6 @@ lib
 
 # Finder (MacOS) folder config
 .DS_Store
+
+
+test.yaml

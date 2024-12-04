@@ -2,7 +2,7 @@ name: 'Render Deploy action'
 description: 'Instrument deploy to Render.com provider'
 inputs:
   definition_file:
-    description: 'Path to the definition file'
+    description: 'Path to the render structured yaml definition file'
     required: true
   token:
     description: 'Render API token'

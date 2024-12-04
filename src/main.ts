@@ -1,46 +1,68 @@
 import fs from 'fs';
 import { z } from "zod";
 import * as core from '@actions/core';
+import * as yaml from 'yaml'
 
 import { RenderSource } from "./render.source";
 
 try {
-  // Get inputs defined in action.yml
   const definitionFile = core.getInput('definition_file', { required: true });
   const renderToken = core.getInput('token', { required: true });
-  const triggerDeploy = core.getInput('trigger_deploy');
+  const triggerDeploy = (core.getInput('trigger_deploy') || true) === true;
 
-  const rawConfig = JSON.parse(fs.readFileSync(definitionFile, 'utf8'));
-
-  if (!rawConfig) {
-    throw new Error('definition_file must be a valid JSON file');
-  }
+  const rawConfig = fs.readFileSync(definitionFile, 'utf8');
+  const parsedConfig = yaml.parse(rawConfig);
 
   const validation = z.object({
-    service: z.object({
-      type: z.string(),
-      name: z.string(),
-      id: z.string(),
-      envs: z.record(z.string()).optional(),
-    }),
-  }).safeParse(rawConfig);
+    services: z.array(
+      z.object({
+        type: z.enum(['web', 'pserv', 'worker', 'cron', 'redis']),
+        name: z.string(),
+        envVars: z.array(
+          z.object({
+            key: z.string(),
+            value: z.union([z.string(), z.number()]),
+          }),
+        ).optional(),
+      }),
+    ),
+  }).parse(parsedConfig);
 
-  if (!validation.success || !validation.data) {
-    throw new Error(validation.error.message);
+  if (validation.services.length !== 1) {
+    throw new Error(`${definitionFile} should specify only one service`);
   }
 
-  const { data: { service }} = validation;
   const render = new RenderSource(renderToken);
+  const serviceId = await render.fetchServiceIDByName(validation.services[0].name);
 
-  const currentEnvs = render.fetchCurrentEnvs(service.id);
-  const deleteEnvKeys = Object.keys(currentEnvs).filter((key) => service.envs && !service.envs[key]);
+  const service = {
+    ...validation.services[0],
+    id: serviceId,
+    envs: validation.services[0].envVars?.reduce((acc, { key, value }) => ({
+      ...acc,
+      [key]: value,
+    }), {} as Record<string, string | number>),
+  };
 
+  core.info(`Running action for ${service.name} [${serviceId}]`);
+  const currentEnvs = await render.fetchCurrentEnvs(service.id);
+  const deleteEnvKeys = Object.keys(currentEnvs).filter((key) => service.envs ? !service.envs[key] : true);
+
+  core.info(`Updating service envs`);
   await render.updateEnvs(service.id, service.envs);
   await render.deleteEnvs(service.id, deleteEnvKeys);
 
   if (triggerDeploy) {
+    core.info(`Triggering render deploy`);
     await render.deploy(service.id);
   }
+
+  core.info(`Action executed with success`);
 } catch (error: any) {
-  core.setFailed(error.message);
+  core.error(
+    error instanceof Error
+      ? error.message
+      : error
+  );
+  core.setFailed('Action failed with error');
 }
