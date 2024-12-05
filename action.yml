@@ -8,7 +8,10 @@ inputs:
     description: 'Render API token'
     required: true
   trigger_deploy:
-    description: 'Should trigger the deploy to apply the changes after the definition file is processed - (yes/no) default is yes'
+    description: 'Should trigger the deploy to apply the changes after the definition file is processed - (true/false) default is true'
+    required: false
+  ignore_suspended:
+    description: 'If a service is suspended, the action will ignore it and continue - (true/false) default is false'
     required: false
 runs:
   using: 'node20'

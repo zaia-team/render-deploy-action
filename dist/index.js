@@ -27998,7 +27998,7 @@ try {
     const definitionFile = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('definition_file', { required: true });
     const renderToken = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('token', { required: true });
     const triggerDeploy = (_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('trigger_deploy') || 'true') === 'true';
-    console.log('triggerDeploy', triggerDeploy);
+    const ignoreSuspended = (_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('ignore_suspended') || 'false') === 'true';
     const rawConfig = fs__WEBPACK_IMPORTED_MODULE_0___default().readFileSync(definitionFile, 'utf8');
     const parsedConfig = yaml__WEBPACK_IMPORTED_MODULE_2__/* .parse */ .qg(rawConfig);
     const validation = zod__WEBPACK_IMPORTED_MODULE_3__.z.object({
@@ -28015,7 +28015,7 @@ try {
         throw new Error(`${definitionFile} should specify only one service`);
     }
     const render = new _render_source__WEBPACK_IMPORTED_MODULE_4__/* .RenderSource */ .G(renderToken);
-    const serviceId = await render.fetchServiceIDByName(validation.services[0].name);
+    const { id: serviceId, suspended } = await render.fetchServiceByName(validation.services[0].name);
     const service = {
         ...validation.services[0],
         id: serviceId,
@@ -28024,13 +28024,19 @@ try {
             [key]: value,
         }), {}),
     };
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Running action for ${service.name} [${serviceId}]`);
+    _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Running action for ${service.name} [${service.id}]`);
     const currentEnvs = await render.fetchCurrentEnvs(service.id);
     const deleteEnvKeys = Object.keys(currentEnvs).filter((key) => service.envs ? !service.envs[key] : true);
     _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Updating service envs`);
     await render.updateEnvs(service.id, service.envs);
     await render.deleteEnvs(service.id, deleteEnvKeys);
-    if (triggerDeploy) {
+    if (suspended && ignoreSuspended) {
+        _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Service is suspended, ignoring deploy trigger`);
+    }
+    if (suspended && !ignoreSuspended) {
+        throw new Error(`Service is suspended, deploy trigger is required`);
+    }
+    if (triggerDeploy && !suspended) {
         _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Triggering render deploy`);
         await render.deploy(service.id);
     }
@@ -33170,7 +33176,7 @@ class RenderSource {
     constructor(token) {
         this.client = client(token);
     }
-    async fetchServiceIDByName(name) {
+    async fetchServiceByName(name) {
         const { data } = await this.client.get('/services', {
             params: {
                 name: name,
@@ -33179,13 +33185,20 @@ class RenderSource {
         const validation = lib.z.array(lib.z.object({
             service: lib.z.object({
                 id: lib.z.string(),
+                suspended: lib.z.union([
+                    lib.z.literal('suspended'),
+                    lib.z.literal('not_suspended')
+                ]),
             }),
         })).parse(data);
         if (validation.length !== 1) {
             throw new Error(`Service ${name} not found`);
         }
         const { service } = validation[0];
-        return service.id;
+        return {
+            id: service.id,
+            suspended: service.suspended === 'suspended',
+        };
     }
     async fetchCurrentEnvs(serviceId) {
         const { data } = await this.client.get(`/services/${serviceId}/env-vars`, {

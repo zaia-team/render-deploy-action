@@ -21,6 +21,11 @@ Render API token
 **Optional** - default `true`\
 Should trigger the deploy to apply the changes after the definition file is processed
 
+### `ignore_suspended`
+**Optional** - default `false`\
+If a service is suspended, the action will ignore it and continue.\
+An exception will be thrown if this setting is set as true and the service is suspended.
+
 ## Example usage
 
 ```yaml

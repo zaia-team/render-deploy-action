@@ -8,7 +8,7 @@ export class RenderSource  {
     this.client = client(token);
   }
 
-  public async fetchServiceIDByName(name: string) {
+  public async fetchServiceByName(name: string) {
     const { data } = await this.client.get('/services', {
       params: {
         name: name,
@@ -19,6 +19,10 @@ export class RenderSource  {
       z.object({
         service: z.object({
           id: z.string(),
+          suspended: z.union([
+            z.literal('suspended'),
+            z.literal('not_suspended')
+          ]),
         }),
       })
     ).parse(data);
@@ -28,7 +32,10 @@ export class RenderSource  {
     }
 
     const { service } = validation[0];
-    return service.id;
+    return {
+      id: service.id,
+      suspended: service.suspended === 'suspended',
+    };
   }
 
   public async fetchCurrentEnvs(serviceId: string) {
