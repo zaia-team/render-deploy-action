@@ -10,7 +10,6 @@ inputs:
   trigger_deploy:
     description: 'Should trigger the deploy to apply the changes after the definition file is processed - (yes/no) default is yes'
     required: false
-    default: "yes"
 runs:
   using: 'node20'
   main: 'dist/index.js'

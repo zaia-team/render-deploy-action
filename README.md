@@ -24,9 +24,8 @@ Should trigger the deploy to apply the changes after the definition file is proc
 ## Example usage
 
 ```yaml
-uses: zaia-team/render-deploy-action@v0.1.1
+uses: zaia-team/render-deploy-action@v0.2
 with:
   definition_file: './render/production.json'
   token: 'your-render-token'
-  trigger_deploy: true
 ```
