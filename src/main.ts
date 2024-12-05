@@ -8,7 +8,7 @@ import { RenderSource } from "./render.source";
 try {
   const definitionFile = core.getInput('definition_file', { required: true });
   const renderToken = core.getInput('token', { required: true });
-  const triggerDeploy = (core.getInput('trigger_deploy') || true) === true;
+  const triggerDeploy = (core.getInput('trigger_deploy') || 'true') === 'true';
 
   const rawConfig = fs.readFileSync(definitionFile, 'utf8');
   const parsedConfig = yaml.parse(rawConfig);

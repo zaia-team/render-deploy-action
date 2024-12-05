@@ -27997,7 +27997,8 @@ __nccwpck_require__.r(__webpack_exports__);
 try {
     const definitionFile = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('definition_file', { required: true });
     const renderToken = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('token', { required: true });
-    const triggerDeploy = (_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('trigger_deploy') || true) === true;
+    const triggerDeploy = (_actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('trigger_deploy') || 'true') === 'true';
+    console.log('triggerDeploy', triggerDeploy);
     const rawConfig = fs__WEBPACK_IMPORTED_MODULE_0___default().readFileSync(definitionFile, 'utf8');
     const parsedConfig = yaml__WEBPACK_IMPORTED_MODULE_2__/* .parse */ .qg(rawConfig);
     const validation = zod__WEBPACK_IMPORTED_MODULE_3__.z.object({
