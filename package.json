@@ -1,6 +1,7 @@
 {
   "name": "render-deploy-action",
   "main": "src/main.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "package": "ncc build -s"
@@ -15,6 +16,7 @@
     "@vercel/ncc": "^0.38.3",
     "axios": "^1.7.8",
     "commander": "^12.1.0",
+    "tsx": "^4.19.2",
     "yaml": "^2.6.1",
     "zod": "^3.23.8"
   }

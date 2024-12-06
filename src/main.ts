@@ -50,8 +50,8 @@ try {
   const deleteEnvKeys = Object.keys(currentEnvs).filter((key) => service.envs ? !service.envs[key] : true);
 
   core.info(`Updating service envs`);
-  await render.updateEnvs(service.id, service.envs);
   await render.deleteEnvs(service.id, deleteEnvKeys);
+  await render.updateEnvs(service.id, service.envs);
 
   if (suspended && ignoreSuspended) {
     core.info(`Service is suspended, ignoring deploy trigger`);

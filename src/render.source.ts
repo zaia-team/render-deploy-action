@@ -64,11 +64,10 @@ export class RenderSource  {
   
   public async updateEnvs (serviceId: string, envs: Record<string, string | number> = {}) {
     await Promise.all(
-      Object.keys(envs).map((key) => {
-        return async () => 
-          await this.client.put(`/services/${serviceId}/env-vars/${key}`, {
-            value: envs[key],
-          })
+      Object.keys(envs).map(async (key) => {
+        const result = await this.client.put(`/services/${serviceId}/env-vars/${key}`, {
+          value: envs[key].toString(),
+        })
       })
     );
   };
@@ -76,8 +75,7 @@ export class RenderSource  {
   public async deleteEnvs (serviceId: string, keys: string[] = []) {
     Promise.all(
       keys.map(async (key) => {
-        return async () => 
-          await this.client.delete(`/services/${serviceId}/env-vars/${key}`);
+        await this.client.delete(`/services/${serviceId}/env-vars/${key}`);
       })
     );
   };
